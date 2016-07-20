@@ -23,6 +23,7 @@ struct arg_survey {
   unsigned nodes;
   char* ref_file;
   char* target_file;
+  bool verbose;
 };
 
 static char args_doc_survey[] = "reference.tiff target.tiff";
@@ -110,6 +111,10 @@ static error_t parse_survey_command(int key, char* arg, struct argp_state* state
       }
       break;
 
+    case 'v':
+      arguments->verbose = true;
+      break;
+
     case ARGP_KEY_NO_ARGS:
       argp_usage (state);
 
@@ -155,6 +160,7 @@ static struct argp_option options_survey[] = {
   {"range-c",   'c', "RANGE",   0, "the range of c to survey, or a fixed point" },
   {"range-d",   'd', "RANGE",   0, "the range of d to survey, or a fixed point" },
   {"nodes",     'n', "NUMBER",  0, "the number of grid nodes in eeach parameter range" },
+  {"verbose",   'v',    0,      0, "indicate processing stages" },
   { 0 }
 };
 
@@ -183,6 +189,7 @@ static struct argp argp_survey = {
   args.dmin = 0.0; \
   args.dmax = 0.0; \
   args.nodes = 5; \
+  args.verbose = false; \
   argp_parse(&argp_survey, argc, argv, ARGP_IN_ORDER, &argc, &args); \
   free(argv[0]); \
   argv[0] = argv0; \
