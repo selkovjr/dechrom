@@ -31,14 +31,14 @@ using namespace termcolor;
 bool verbose;
 int run = 0;
 
-Mat ref_image, src;
+Mat ref_image, work_plane;
 Mat dst, map_x, map_y;
 
 #define RED 0
 #define GREEN 1
 #define BLUE 2
 #define UNKNOWN 3
-int target_color = UNKNOWN;
+int work_plane_color = UNKNOWN;
 
 void color_switch(ostream& s, int color) {
   switch (color) {
@@ -64,32 +64,32 @@ double diff (double a, double b, double c, double d) {
   clock_t start_time = clock(), end_time;
   double elapsed;
 
-  /// Create dst, map_x and map_y with the same size as src:
-  dst.create( src.size(), src.type() );
-  map_x.create( src.size(), CV_32FC1 );
-  map_y.create( src.size(), CV_32FC1 );
+  /// Create dst, map_x and map_y with the same size as work_plane:
+  dst.create( work_plane.size(), work_plane.type() );
+  map_x.create( work_plane.size(), CV_32FC1 );
+  map_y.create( work_plane.size(), CV_32FC1 );
 
   run++;
   if (verbose) cerr << right << setw(5) << run << reset << lightgrey <<  ": computing maps ... " << reset;
 #pragma omp parallel shared(map_x, map_y, a, b, c, d) private(i, j, x, y, r, rd)
   {
 #pragma omp for collapse(2)
-    for (j = 0; j < src.rows; j++ ) {
-      for (i = 0; i < src.cols; i++ ) {
-        if (src.at<ushort>(i,j) > 0) { // don't move masked pixels (black outer triangles)
-          x = (double)(2 * i - src.rows) / src.rows;
-          y = (double)(2 * j - src.cols) / src.cols;
+    for (j = 0; j < work_plane.rows; j++ ) {
+      for (i = 0; i < work_plane.cols; i++ ) {
+        if (work_plane.at<ushort>(i,j) > 0) { // don't move masked pixels (black outer triangles)
+          x = (double)(2 * i - work_plane.rows) / work_plane.rows;
+          y = (double)(2 * j - work_plane.cols) / work_plane.cols;
           r = sqrt(x * x + y * y);
           rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
-          map_x.at<float>(j,i) = (x * rd / r + 1) * src.rows / 2;
-          map_y.at<float>(j,i) = (y * rd / r + 1) * src.cols / 2;
+          map_x.at<float>(j,i) = (x * rd / r + 1) * work_plane.rows / 2;
+          map_y.at<float>(j,i) = (y * rd / r + 1) * work_plane.cols / 2;
         }
       }
     }
   } /* end of parallel section */
 
   if (verbose) cerr << lightgrey << "remapping ... " << reset;
-  remap( src, dst, map_x, map_y, CV_INTER_LINEAR, BORDER_CONSTANT, Scalar(0,0, 0) );
+  remap( work_plane, dst, map_x, map_y, CV_INTER_LINEAR, BORDER_CONSTANT, Scalar(0,0, 0) );
 
   /// Compute difference
   if (verbose) cerr << lightgrey << "computing difference ... " << reset;
@@ -98,8 +98,8 @@ double diff (double a, double b, double c, double d) {
 #pragma omp parallel shared(dst, ref_image) private(i, j, pa, pb) reduction(+:num,quot)
   {
 #pragma omp for collapse(2)
-    for ( j = 0; j < src.rows; j++ ) {
-      for ( i = 0; i < src.cols; i++ ) {
+    for ( j = 0; j < work_plane.rows; j++ ) {
+      for ( i = 0; i < work_plane.cols; i++ ) {
         if (dst.at<ushort>(i, j) > 0 and ref_image.at<ushort>(i,j) > 0) { // select unmasked
           pa = dst.at<ushort>(j, i);
           pb = ref_image.at<ushort>(j,i);
@@ -121,7 +121,7 @@ double diff (double a, double b, double c, double d) {
       setw(10) << setprecision(6) << b <<
       setw(10) << setprecision(6) << c <<
       setw(10) << setprecision(6) << d;
-    color_switch(cerr, target_color);
+    color_switch(cerr, work_plane_color);
     cerr << setw(9) << setprecision(2) << tca << reset <<
       lightgrey << setw(7) << setprecision(2) << elapsed << "s" << reset << endl;
   }
@@ -175,24 +175,33 @@ void run_survey (struct argp_state* state) {
     endl;
 
   // Load the images
-  cerr << lightgrey << "loading reference image " << reset << args.ref_file << "\r" << flush;
+  cerr << lightgrey << "loading reference plane " << reset << args.ref_file << "\r" << flush;
   ref_image = imread( args.ref_file, CV_LOAD_IMAGE_ANYDEPTH ); // grayscale
   cerr << setw(100) << left << 0 << "\r" << flush; // blank line
-  cerr << lightgrey << "reference image: " << reset << lightgreen << args.ref_file << reset << endl;
+  cerr << lightgrey << "reference plane: " << reset << lightgreen << args.ref_file << reset << endl;
 
-  cerr << lightgrey << "loading target image " << reset << args.target_file << "\r" << flush;
-  src = imread( args.target_file, CV_LOAD_IMAGE_ANYDEPTH );
+  cerr << lightgrey << "loading work plane " << reset << args.work_plane_file << "\r" << flush;
+  work_plane = imread( args.work_plane_file, CV_LOAD_IMAGE_ANYDEPTH );
   cerr << setw(100) << left << 0 << "\r" << flush; // blank line
 
-  string target = args.target_file;
-  if (target.find("-0.") != string::npos) target_color = RED;
-  if (target.find("-1.") != string::npos) target_color = GREEN;
-  if (target.find("-2.") != string::npos) target_color = BLUE;
-  cerr << lightgrey << "target image: " << reset;
-  color_switch(cerr, target_color);
-  cerr << target << reset;
+  if (ref_image.cols != work_plane.cols or ref_image.rows != work_plane.rows) {
+    cerr << on_red << "Input images must have identical geometry. Got "
+      << bold << ref_image.rows << reset << on_red << "×" << bold << ref_image.cols << reset
+      << on_red << " and "
+      << bold << work_plane.rows << reset << on_red << "×" << bold << work_plane.cols << reset
+      << endl;
+    exit(EXIT_FAILURE);
+  }
 
-  if (target_color != RED and target_color != GREEN and target_color != BLUE) {
+  string work_plane = args.work_plane_file;
+  if (work_plane.find("-0.") != string::npos) work_plane_color = RED;
+  if (work_plane.find("-1.") != string::npos) work_plane_color = GREEN;
+  if (work_plane.find("-2.") != string::npos) work_plane_color = BLUE;
+  cerr << lightgrey << "work plane: " << reset;
+  color_switch(cerr, work_plane_color);
+  cerr << work_plane << reset;
+
+  if (work_plane_color != RED and work_plane_color != GREEN and work_plane_color != BLUE) {
     cerr << lightgrey << " (filename does not indicate which channel it is)";
   }
   cerr << endl;
@@ -201,7 +210,7 @@ void run_survey (struct argp_state* state) {
   cerr.setf(ios::fixed, ios::floatfield);
 
   if (not verbose) {
-    color_switch(cerr, target_color);
+    color_switch(cerr, work_plane_color);
   }
   for (unsigned ac = 0; ac < args.nodes; ac++) {
     double a = args.amin + ac * astep;

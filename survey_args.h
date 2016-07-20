@@ -22,11 +22,11 @@ struct arg_survey {
   double dmin, dmax;
   unsigned nodes;
   char* ref_file;
-  char* target_file;
+  char* work_plane_file;
   bool verbose;
 };
 
-static char args_doc_survey[] = "reference.tiff target.tiff";
+static char args_doc_survey[] = "reference.tiff work.tiff";
 
 static char doc_survey[] =
 "\n"
@@ -35,7 +35,7 @@ static char doc_survey[] =
 "\n"
 "Inputs:\n"
 "  A grayscale histogram-equalized TIFF reference (green channel)\n"
-"  A grayscale histogram-equalized target TIFF (blue or red)\n"
+"  A grayscale histogram-equalized TIFF to distort (blue or red)\n"
 "\n"
 "Output:\n"
 "  A table of parameter values and resulting TCA metric\n"
@@ -43,9 +43,9 @@ static char doc_survey[] =
 "\n"
 "\v"
 "For each set of parameters on a grid, the radial distortion\n"
-"is applied to the target image and the TCA metric is calculatedi\n"
+"is applied to the work_plane image and the TCA metric is calculatedi\n"
 "as the average of absolute per-pixel differences between the\n"
-"distorted  target image and the refernce image.\n"
+"distorted work-plane image and the refernce image.\n"
 "\n"
 ;
 
@@ -122,15 +122,15 @@ static error_t parse_survey_command(int key, char* arg, struct argp_state* state
       nonopt = &state->argv[state->next];
       state->next = state->argc; // we're done
       arguments->ref_file = arg;
-      arguments->target_file = nonopt[0];
+      arguments->work_plane_file = nonopt[0];
 
       if (not file_exists(arguments->ref_file)) {
         cerr << on_red << "File does not exist: " << bold << arguments->ref_file << reset << endl;
         exit(EXIT_FAILURE);
       }
 
-      if (not file_exists(arguments->target_file)) {
-        cerr << on_red << "File does not exist: " << bold << arguments->target_file << reset << endl;
+      if (not file_exists(arguments->work_plane_file)) {
+        cerr << on_red << "File does not exist: " << bold << arguments->work_plane_file << reset << endl;
         exit(EXIT_FAILURE);
       }
 
