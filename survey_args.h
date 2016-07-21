@@ -21,6 +21,7 @@ struct arg_survey {
   unsigned nodes;
   char* ref_file;
   char* work_plane_file;
+  bool exr;
   bool verbose;
 };
 
@@ -54,6 +55,10 @@ static error_t parse_survey_command(int key, char* arg, struct argp_state* state
   assert( arguments );
 
   switch(key) {
+    case 'x':
+      arguments->exr = true;
+      break;
+
     case 'n':
       if (sscanf(arg, "%u", &(arguments->nodes)) != 1) {
         cerr << on_red << "Expecting an integer number of grid nodes instead of " << bold << arg << reset << endl;
@@ -158,6 +163,7 @@ static struct argp_option options_survey[] = {
   {"range-c",   'c', "RANGE",   0, "the range of c to survey, or a fixed point" },
   {"range-d",   'd', "RANGE",   0, "the range of d to survey, or a fixed point" },
   {"nodes",     'n', "NUMBER",  0, "the number of grid nodes in eeach parameter range" },
+  {"exr",       'x',    0,      0, "input images are tilted EXR channels" },
   {"verbose",   'v',    0,      0, "indicate processing stages" },
   { 0 }
 };
@@ -187,6 +193,7 @@ static struct argp argp_survey = {
   args.dmin = 0.0; \
   args.dmax = 0.0; \
   args.nodes = 5; \
+  args.exr = false; \
   args.verbose = false; \
   argp_parse(&argp_survey, argc, argv, ARGP_IN_ORDER, &argc, &args); \
   free(argv[0]); \

@@ -1,6 +1,9 @@
-dcraw -d -s all -4 -T 160206_172303.RAF
+dcraw -d -s all -4 -T 160206_172303.RAF # Suñol DR
+dcraw -d -s all -4 -T 150912_160716.RAF # Limantour HR
 
 fuji-exr linear -h 160206_172303_* interpolated.tiff # EXR
+fuji-exr linear -h 150912_160716_* interpolated.tiff # EXR
+
 fuji-exr linear 151018_180303_0.tiff interpolated.tiff # subframe
 
 convert interpolated.tiff -separate interpolated-%d.tiff

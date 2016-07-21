@@ -10,6 +10,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <math.h>
+#include <omp.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +33,7 @@ void run_radial (struct argp_state* state) {
   double b = args.b;
   double c = args.c;
   double d = args.d;
+  int nthreads = omp_get_max_threads();
 
 
   if (args.fast) {
@@ -41,9 +43,10 @@ void run_radial (struct argp_state* state) {
 
     Mat work_plane, dst, map_x, map_y;
 
-    cerr << lightgrey << "loading work plane " << reset << args.input_file << "\r" << flush;
+    cerr << lightgrey << "Running " << reset << "OpenCV remap()"
+      << lightgrey << " with " <<  nthreads << " threads" << reset << endl;
+    cerr << lightgrey << "loading input file " << reset << args.input_file << "\r" << flush;
     work_plane = imread( args.input_file, CV_LOAD_IMAGE_ANYDEPTH );
-    sleep(1);
     cerr << setw(100) << left << 0 << "\r" << flush; // blank line
     width = work_plane.cols;
     height = work_plane.rows;
@@ -53,6 +56,9 @@ void run_radial (struct argp_state* state) {
     map_x.create( work_plane.size(), CV_32FC1 );
     map_y.create( work_plane.size(), CV_32FC1 );
 
+    // Map computation in the following two sections consists of two
+    // slightly different variants for portrait and landscape orientation.
+    // In both cases, the shorter dimension is used for radius normalization.
     cerr << lightgrey <<  "computing maps ... " << reset;
     if (width >= height) { // landscape
 #pragma omp parallel shared(width, height, map_x, map_y, a, b, c, d) private(i, j, x, y, r, rd)
@@ -89,19 +95,23 @@ void run_radial (struct argp_state* state) {
             map_y.at<float>(j, i) = (width * y * rd / r + height) / 2;
           }
         }
-      }
-    } /* end of parallel section */
+      } /* end of parallel section */
+    }
 
     cerr << lightgrey << "remapping ... " << reset;
     remap( work_plane, dst, map_x, map_y, CV_INTER_LANCZOS4, BORDER_CONSTANT, Scalar(0,0, 0) );
 
     cerr << lightgrey << "writing ... " << reset;
     imwrite(args.output_file, dst);
-    cerr << lightgrey << "done." << endl;
+    cerr << lightgrey << "\r                                                                               \r" << reset;
   }
 
   else {
     // Slow, high quality
+    cerr << lightgrey << "Running " << reset << "Magick::BarrelDistortion"
+      << lightgrey << " with " <<  nthreads << " threads" << reset << endl;
+    Magick::ResourceLimits::thread(nthreads);
+
     double arguments[4] = {d, c, b, a};
 
     Magick::FilterType filter(LanczosFilter);

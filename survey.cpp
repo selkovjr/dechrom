@@ -27,7 +27,6 @@ using namespace cv;
 using namespace termcolor;
 
 bool verbose;
-bool exr_mode;
 
 int run = 0;
 
@@ -39,10 +38,6 @@ Mat dst, map_x, map_y;
 #define GREEN 1
 #define BLUE 2
 #define UNKNOWN 3
-
-#define CFA_WIDTH 3264
-#define CFA_HEIGHT 2464
-
 int work_plane_color = UNKNOWN;
 
 string to_string(double v) {
@@ -67,66 +62,96 @@ void color_switch(ostream& s, int color) {
   }
 }
 
-double diff (double a, double b, double c, double d) {
+double diff (double a, double b, double c, double d, bool exr_mode) {
   // private thread variables
   long i, j, pa, pb;
   double x, y, r, rd;
+  unsigned width = work_plane.cols;
+  unsigned height = work_plane.rows;
 
   clock_t start_time = clock(), end_time;
   double elapsed;
 
   // Fill the CFA area with white
   if (verbose) cerr << right << setw(5) << run << reset << lightgrey <<  ": making mask ... " << reset;
-  blank.create( work_plane.size(), work_plane.type() );
-#pragma omp parallel shared(blank, exr_mode) private(i, j)
+  blank.create(work_plane.size(), work_plane.type());
+//#pragma omp parallel shared(blank, exr_mode) private(i, j)
   {
-#pragma omp for collapse(2)
-    for (j = 0; j < blank.rows; j++ ) {
-      for (i = 0; i < blank.cols; i++ ) {
+//#pragma omp for
+    for (j = 0; j < width; j++ ) {
+      for (i = 0; i < height; i++ ) {
         if (exr_mode) {
           if ( // CFA interior
-            i + j >= CFA_WIDTH - 1 &&                   // NW boundary
-            j > i - CFA_WIDTH - 1 &&                    // NE boundary
-            i + j < CFA_WIDTH + 2 * CFA_HEIGHT - 1 &&   // SE boundary
-            i > j - CFA_WIDTH                           // SW boundary
+            i + j >= width - 1 &&               // NW boundary
+            j > i - width - 1 &&                // NE boundary
+            i + j < width + 2 * height - 1 &&   // SE boundary
+            i > j - width                       // SW boundary
           ) {
-            blank.at<ushort>(j,i) = 65535;
+            blank.at<ushort>(i, j) = 65535;
           }
           else {
-            blank.at<ushort>(j,i) = j;
+            blank.at<ushort>(i, j) = 0;
           }
         }
         else {
-          blank.at<ushort>(j,i) = 65535;
+          //cerr << j << ", " << i << endl;
+          blank.at<ushort>(i, j) = 65535;
         }
       }
     }
   } /* end of parallel section */
-
 
   /// Create dst, map_x and map_y with the same size as work_plane:
   dst.create( work_plane.size(), work_plane.type() );
   map_x.create( work_plane.size(), CV_32FC1 );
   map_y.create( work_plane.size(), CV_32FC1 );
 
+  // Map computation in the following two sections consists of two
+  // slightly different variants for portrait and landscape orientation.
+  // In both cases, the shorter dimension is used for radius normalization.
   run++;
   if (verbose) cerr << lightgrey <<  "computing maps ... " << reset;
+  if (width >= height) { // landscape
 #pragma omp parallel shared(map_x, map_y, a, b, c, d) private(i, j, x, y, r, rd)
-  {
-#pragma omp for collapse(2)
-    for (j = 0; j < work_plane.rows; j++ ) {
-      for (i = 0; i < work_plane.cols; i++ ) {
-        if (blank.at<ushort>(j, i) == 65535) { // don't move masked pixels (black outer triangles)
-          x = (double)(2 * i - work_plane.cols) / work_plane.cols;
-          y = (double)(2 * j - work_plane.rows) / work_plane.rows;
-          r = sqrt(x * x + y * y);
-          rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
-          map_x.at<float>(j, i) = (x * rd / r + 1) * work_plane.cols / 2;
-          map_y.at<float>(j, i) = (y * rd / r + 1) * work_plane.rows / 2;
+    {
+#pragma omp for
+      for (j = 0; j < height; j++ ) {
+        // Normalize to half-height as in IM and PanoTools.
+        // The offset of 0.5 points at pixel center.
+        y = (double)(2 * (j + 0.5) - height) / height;
+        for (i = 0; i < width; i++ ) {
+          if (blank.at<ushort>(j, i) == 65535) { // don't move masked pixels (black outer triangles)
+            x = (double)(2 * (i + 0.5) - width) / height;
+            r = sqrt(x * x + y * y);
+            rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
+            map_x.at<float>(j, i) = (height * x * rd / r + width) / 2;
+            map_y.at<float>(j, i) = (height * y * rd / r + height) / 2;
+          }
         }
       }
-    }
-  } /* end of parallel section */
+    } /* end of parallel section */
+  }
+
+  if (width < height) { // portrait
+#pragma omp parallel shared(width, height, map_x, map_y, a, b, c, d) private(i, j, x, y, r, rd)
+    {
+#pragma omp for
+      for (j = 0; j < height; j++ ) {
+        // Normalize to half-width as in IM and PanoTools.
+        // The offset of 0.5 points at pixel center.
+        y = (double)(2 * (j + 0.5) - height) / width;
+        for (i = 0; i < width; i++ ) {
+          if (blank.at<ushort>(j, i) == 65535) { // don't move masked pixels (black outer triangles)
+            x = (double)(2 * (i + 0.5) - width) / width;
+            r = sqrt(x * x + y * y);
+            rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
+            map_x.at<float>(j, i) = (width * x * rd / r + width) / 2;
+            map_y.at<float>(j, i) = (width * y * rd / r + height) / 2;
+          }
+        }
+      }
+    } /* end of parallel section */
+  }
 
   if (verbose) cerr << lightgrey << "remapping ... " << reset;
   remap( blank, mask, map_x, map_y, CV_INTER_LINEAR, BORDER_CONSTANT, Scalar(0,0, 0) );
@@ -227,27 +252,6 @@ void run_survey (struct argp_state* state) {
     exit(EXIT_FAILURE);
   }
 
-  if (ref_plane.cols == CFA_WIDTH and ref_plane.rows == CFA_HEIGHT) {
-    exr_mode = false;
-  }
-  else if (
-    ref_plane.rows == CFA_WIDTH + CFA_HEIGHT and
-    ref_plane.cols == CFA_WIDTH + CFA_HEIGHT
-  ) {
-    exr_mode = true;
-  }
-  else {
-    cerr << on_red << "Unrecognized image geometry: "
-      << bold << ref_plane.rows << reset << on_red << "×" << bold << ref_plane.cols << reset
-      << endl;
-    cerr << lightgrey << "Expected image formats are either " << reset
-      << bold << (CFA_WIDTH + CFA_HEIGHT) << reset << "×" << bold << (CFA_WIDTH + CFA_HEIGHT) << reset
-      << lightgrey << " (rotated high-resolution EXR matrix) or "
-      << bold << CFA_WIDTH << reset << "×" << bold << CFA_HEIGHT << reset
-      << lightgrey << " (a single EXR subframe)" << reset << endl;
-    exit(EXIT_FAILURE);
-  }
-
   string work_plane = args.work_plane_file;
   if (work_plane.find("-0.") != string::npos) work_plane_color = RED;
   if (work_plane.find("-1.") != string::npos) work_plane_color = GREEN;
@@ -275,7 +279,7 @@ void run_survey (struct argp_state* state) {
         double c = args.cmin + cc * cstep;
         for (unsigned dc = 0; dc < args.nodes; dc++) {
           double d = args.dmin + dc * dstep;
-          double tca = diff(a, b, c, d);
+          double tca = diff(a, b, c, d, args.exr);
           printf("%f\t%f\t%f\t%f\t%f\n", a, b, c, d, tca);
           if (not verbose) {
             progressbar_inc(pbar);

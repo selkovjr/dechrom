@@ -28,14 +28,16 @@ static char doc_radial[] =
 "\n"
 "\v"
 "The default remapping method is ImageMagick's Lanczos. It runs\n"
-"slow and whether it runs parallel or not depends on unidentified\n"
-"conditions.\n"
+"slower but appears to result in a slightly more pleasing image.\n"
 "\n"
 "The faster alternative (-f) is OpenCV Lanczos. It produces visually\n"
-"similar results, but differences in corresponding pixel values can\n"
-"exceed 30% in IM's compare metric. It uses OpenMP threads and can\n"
-"run much faster.\n"
+"similar results, but runs several times faster than the default method.\n"
 "\n"
+"This tool was built to distort separate color planes of an image\n"
+"and it expects grayscale input. However, the default ImageMagick\n"
+"method will happily distort color images. The OpenCV variant will\n"
+"accept color input but will produce a grayscale image of unkownn\n"
+"formulation.\n"
 ;
 
 static error_t parse_radial_command(int key, char* arg, struct argp_state* state) {
