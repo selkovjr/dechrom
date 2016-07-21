@@ -1,24 +1,16 @@
 #include <iostream>
-#include <sstream>
 #include <iomanip>
-#include <string>
-#include <algorithm>
 
 #include <Magick++.h>
 
-#include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <math.h>
 #include <omp.h>
 
-#include <stdlib.h>
-#include <string.h>
 #include <error.h>
-#include <ctime>
 
 #include "radial_args.h"
-#include "progressbar.h"
 #include "termcolor.h"
 
 using namespace std;

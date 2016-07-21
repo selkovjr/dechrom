@@ -3,7 +3,6 @@
 #include "termcolor.h"
 #include <iostream>
 #include <iomanip>
-#include <fstream>
 
 #include "util.h"
 

@@ -1,23 +1,14 @@
 #include <iostream>
-#include <sstream>
 #include <iomanip>
-#include <string>
 
-#include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <math.h>
-#include <stdio.h>
-#include <unistd.h>
 
-#include <stdlib.h>
-#include <string.h>
-#include <error.h>
 #include <ctime>
 
 #include "survey_args.h"
 #include "cfa_mask.h"
-#include "write_tiff.h"
 #include "progressbar.h"
 #include "termcolor.h"
 
@@ -75,9 +66,9 @@ double diff (double a, double b, double c, double d, bool exr_mode) {
   // Fill the CFA area with white
   if (verbose) cerr << right << setw(5) << run << reset << lightgrey <<  ": making mask ... " << reset;
   blank.create(work_plane.size(), work_plane.type());
-//#pragma omp parallel shared(blank, exr_mode) private(i, j)
+#pragma omp parallel shared(blank, exr_mode) private(i, j)
   {
-//#pragma omp for
+#pragma omp for
     for (j = 0; j < width; j++ ) {
       for (i = 0; i < height; i++ ) {
         if (exr_mode) {
