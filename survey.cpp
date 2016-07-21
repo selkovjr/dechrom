@@ -20,38 +20,12 @@ using namespace termcolor;
 bool verbose;
 
 int run = 0;
+int work_plane_color = UNKNOWN;
 
 Mat ref_plane, work_plane;
 Mat blank, mask;
 Mat dst, map_x, map_y;
 
-#define RED 0
-#define GREEN 1
-#define BLUE 2
-#define UNKNOWN 3
-int work_plane_color = UNKNOWN;
-
-string to_string(double v) {
-  stringstream ss;
-  ss << v;
-  return ss.str();
-}
-
-void color_switch(ostream& s, int color) {
-  switch (color) {
-    case RED:
-      s << lightred;
-      break;
-    case GREEN:
-      s << lightgreen;
-      break;
-    case BLUE:
-      s << lightblue;
-      break;
-    default:
-      s << yellow;
-  }
-}
 
 double diff (double a, double b, double c, double d, bool exr_mode) {
   // private thread variables
