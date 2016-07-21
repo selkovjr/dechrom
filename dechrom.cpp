@@ -7,7 +7,6 @@
 
 const char *argp_program_version = VERSION " " __DATE__;
 
-void run_distort (struct argp_state* state) {}
 void run_find (struct argp_state* state) {}
 
 //-------------------------------------------------------------------
@@ -28,8 +27,8 @@ static error_t parse_toplevel (int key, char *arg, struct argp_state *state) {
       else if(strcmp(arg, "find") == 0) {
         run_find(state);
       }
-      else if(strcmp(arg, "distort") == 0) {
-        run_distort(state);
+      else if(strcmp(arg, "radial") == 0) {
+        run_radial(state);
       }
       else {
         argp_error(state, "%s is not a valid command", arg);

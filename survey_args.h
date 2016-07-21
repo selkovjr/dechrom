@@ -1,16 +1,14 @@
 #include <argp.h>
+#include <assert.h>
 #include "termcolor.h"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 
+#include "util.h"
+
 using namespace std;
 using namespace termcolor;
-
-bool file_exists (const char *filename) {
-  std::ifstream ifile(filename);
-  return (bool)ifile;
-}
 
 // ------------------------
 // ## survey command parser
@@ -43,7 +41,7 @@ static char doc_survey[] =
 "\n"
 "\v"
 "For each set of parameters on a grid, the radial distortion\n"
-"is applied to the work_plane image and the TCA metric is calculatedi\n"
+"is applied to the work_plane image and the TCA metric is calculated\n"
 "as the average of absolute per-pixel differences between the\n"
 "distorted work-plane image and the refernce image.\n"
 "\n"
@@ -193,5 +191,5 @@ static struct argp argp_survey = {
   argp_parse(&argp_survey, argc, argv, ARGP_IN_ORDER, &argc, &args); \
   free(argv[0]); \
   argv[0] = argv0; \
-  state->next += argc - 1; \
+  state->next += argc - 1;
 

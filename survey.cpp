@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-#include <functional>
 #include <string>
 
 #include "opencv2/core/core.hpp"
@@ -13,7 +12,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <error.h>
 #include <ctime>
 
@@ -143,7 +141,7 @@ double diff (double a, double b, double c, double d) {
 #pragma omp for collapse(2)
     for ( j = 0; j < work_plane.rows; j++ ) {
       for ( i = 0; i < work_plane.cols; i++ ) {
-        if (dst.at<ushort>(i, j) > 0 and ref_plane.at<ushort>(i,j) > 0) { // select unmasked
+        if (mask.at<ushort>(j, i) == 65535) { // select unmasked
           pa = dst.at<ushort>(j, i);
           pb = ref_plane.at<ushort>(j,i);
           num += abs((double)pa - (double)pb);
@@ -189,9 +187,8 @@ void run_survey (struct argp_state* state) {
   if (cstep) n *= args.nodes;
   if (dstep) n *= args.nodes;
 
-
   cerr << lightgrey << "Computing " << reset << n <<
-    lightgrey << " iterations of " << bold << "TCA" << reset << lightgrey << " for " << reset <<
+    lightgrey << " samples of " << bold << "TCA" << reset << lightgrey << " for " << reset <<
 
     "a" << lightgrey << (astep ? " in " : " = ") << reset <<
     args.amin << lightgrey << (astep ? ".." : "") << reset <<

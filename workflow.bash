@@ -1,6 +1,6 @@
 dcraw -d -s all -4 -T 160206_172303.RAF
 
-fuji-exr linear 160206_172303_* interpolated.tiff # EXR
+fuji-exr linear -h 160206_172303_* interpolated.tiff # EXR
 fuji-exr linear 151018_180303_0.tiff interpolated.tiff # subframe
 
 convert interpolated.tiff -separate interpolated-%d.tiff
