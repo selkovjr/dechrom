@@ -1,11 +1,10 @@
 #include <iostream>
 #include <iomanip>
+#include <ctime>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <math.h>
-
-#include <ctime>
 
 #include "survey_args.h"
 #include "cfa_mask.h"
@@ -59,7 +58,6 @@ double diff (double a, double b, double c, double d, bool exr_mode) {
           }
         }
         else {
-          //cerr << j << ", " << i << endl;
           blank.at<ushort>(i, j) = 65535;
         }
       }
