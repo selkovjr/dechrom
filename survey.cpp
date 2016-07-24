@@ -16,17 +16,17 @@ using namespace std;
 using namespace cv;
 using namespace termcolor;
 
-bool verbose;
+static bool verbose;
 
-int run = 0;
-int work_plane_color = UNKNOWN;
+static int run = 0;
+static int work_plane_color = UNKNOWN;
 
-Mat ref_plane, work_plane;
-Mat blank, mask;
-Mat dst, map_x, map_y;
+static Mat ref_plane, work_plane;
+static Mat blank, mask;
+static Mat dst, map_x, map_y;
 
 
-double diff (double a, double b, double c, double d, bool exr_mode) {
+static double diff (double a, double b, double c, double d, bool exr_mode) {
   // private thread variables
   long i, j, pa, pb;
   double x, y, r, rd;
