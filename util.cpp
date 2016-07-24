@@ -5,12 +5,6 @@ bool file_exists (const char *filename) {
   return (bool)ifile;
 }
 
-string to_string(double v) {
-  stringstream ss;
-  ss << v;
-  return ss.str();
-}
-
 void color_switch(ostream& s, int color) {
   switch (color) {
     case RED:
