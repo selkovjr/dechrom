@@ -16,7 +16,9 @@ struct arg_find {
   double a, b, c, d;
   char* ref_file;
   char* work_plane_file;
+  ofstream trace_file;
   bool exr;
+  bool trace;
   bool verbose;
 };
 
@@ -49,6 +51,11 @@ static error_t parse_find_command(int key, char* arg, struct argp_state* state) 
   switch(key) {
     case 'x':
       arguments->exr = true;
+      break;
+
+    case 't':
+      arguments->trace = true;
+      arguments->trace_file.open(arg, ofstream::out);
       break;
 
     case 'v':
@@ -108,8 +115,9 @@ static error_t parse_find_command(int key, char* arg, struct argp_state* state) 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 static struct argp_option options_find[] = {
-  {"exr",       'x',    0,      0, "input images are tilted EXR channels" },
-  {"verbose",   'v',    0,      0, "indicate processing stages" },
+  {"exr",       'x',    0,    0, "input images are tilted EXR channels" },
+  {"trace-file",'t', "FILE",  0, "dump simplex data to a JSON file" },
+  {"verbose",   'v',    0,    0, "indicate processing stages" },
   { 0 }
 };
 

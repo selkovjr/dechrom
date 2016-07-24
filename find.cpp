@@ -37,31 +37,84 @@ static Mat blank, mask;
 static Mat dst, map_x, map_y;
 
 static progressbar *pbar;
+static bool first_iteration = true;
+static bool trace_simplices = false;
+static ofstream *trace_stream;
 
 static double diff (double a, double b, double c, double d);
 
 
 namespace cppoptlib {
 
+  string op_to_string(SimplexOp op) {
+    switch (op) {
+      case SimplexOp::Place:
+        return "place";
+      case SimplexOp::Expand:
+        return "expand";
+      case SimplexOp::Reflect:
+        return "reflect";
+      case SimplexOp::ContractIn:
+        return "contract-in";
+      case SimplexOp::ContractOut:
+        return "contract-out";
+      case SimplexOp::Shrink:
+        return "shrink";
+    }
+    return "unknown";
+  }
+
   // Define the target function (Lens::value())
   template<typename T> class Lens : public Problem<T, 4> {
     public:
+      using typename cppoptlib::Problem<T, 4>::Scalar;
       using typename cppoptlib::Problem<T, 4>::TVector;
+      using MatrixType = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
+
 
       // this is just the objective (NOT optional)
       T value(const TVector &x) {
         return diff(x[0], x[1], x[2], x[3]);
       }
 
-      bool callback(const cppoptlib::Criteria<T> &state, const TVector &x) {
-        std::cerr << "(" << std::setw(2) << state.iterations << ")"
-          << " ||dx|| = " << std::fixed << std::setw(8) << std::setprecision(4) << state.xDelta
-          << " ||x|| = "  << std::setw(6) << x.norm()
-          << " f(x) = "   << std::setw(8) << value(x)
-          << " x = [" << std::setprecision(8) << x.transpose() << "]" << std::endl;
-        TVector a = x.transpose();
-        printf("%f\t%f\t%f\t%f\t%f\n", a[0], a[1], a[2], a[3], value(x));
-        fprintf(stderr, "%f\t%f\t%f\t%f\t%f\n", a[0], a[1], a[2], a[3], value(x));
+      // bool callback(const cppoptlib::Criteria<T> &state, const TVector &x) {
+      //   std::cerr << "(" << std::setw(2) << state.iterations << ")"
+      //     << " ||dx|| = " << std::fixed << std::setw(8) << std::setprecision(4) << state.xDelta
+      //     << " ||x|| = "  << std::setw(6) << x.norm()
+      //     << " f(x) = "   << std::setw(8) << value(x)
+      //     << " x = [" << std::setprecision(8) << x.transpose() << "]" << std::endl;
+      //   TVector a = x.transpose();
+      //   printf("%f\t%f\t%f\t%f\t%f\n", a[0], a[1], a[2], a[3], value(x));
+      //   fprintf(stderr, "%f\t%f\t%f\t%f\t%f\n", a[0], a[1], a[2], a[3], value(x));
+      //   return true;
+      // }
+
+      bool detailed_callback(const cppoptlib::Criteria<T> &state, const MatrixType &x, vector<Scalar> f, SimplexOp op) {
+        TVector x0 = x.col(0).transpose();
+        fprintf(stderr, "%f\t%f\t%f\t%f\t%f\n", x0[0], x0[1], x0[2], x0[3], f[0]);
+        printf("%f\t%f\t%f\t%f\t%f\n", x0[0], x0[1], x0[2], x0[3], f[0]);
+        if (trace_simplices) {
+          TVector x1 = x.col(1).transpose();
+          TVector x2 = x.col(2).transpose();
+          TVector x3 = x.col(3).transpose();
+          TVector x4 = x.col(4).transpose();
+          *trace_stream << (first_iteration ? "" : ",\n") <<
+            "    {\n"
+            "      \"iter\": " << state.iterations << ",\n"
+            "      \"op\": \"" << op_to_string(op) << "\",\n"
+            "      \"x\": [\n"
+            "        [" << x0[0] << ", " << x0[1] << ", " << x0[2] << ", " << x0[3] << "],\n"
+            "        [" << x1[0] << ", " << x1[1] << ", " << x1[2] << ", " << x1[3] << "],\n"
+            "        [" << x2[0] << ", " << x2[1] << ", " << x2[2] << ", " << x2[3] << "],\n"
+            "        [" << x3[0] << ", " << x3[1] << ", " << x3[2] << ", " << x3[3] << "],\n"
+            "        [" << x4[0] << ", " << x4[1] << ", " << x4[2] << ", " << x4[3] << "]\n"
+            "      ],\n"
+            "      \"f\": [" << f[0] << ", " << f[1] << ", " << f[2] << ", " << f[3] << ", " << f[4] << "],\n"
+            "      \"xDelta\": " << state.xDelta << ",\n"
+            "      \"fDelta\": " << state.fDelta << "\n"
+            "    }";
+          first_iteration = false;
+        }
         return true;
       }
   };
@@ -79,14 +132,12 @@ namespace cppoptlib {
         // create initial simplex
         MatrixType s = MatrixType::Zero(DIM, DIM + 1);
         for (int c = 0; c < (int)DIM + 1; ++c) {
-          cerr << "c: " << c << "  ";
+          cerr << "x" << c << "  ";
           for (int r = 0; r < (int)DIM; ++r) {
             s(r, c) = x(r);
             if (r == c - 1) {
               if (x(r) == 0) {
                 s(r, c) = 0.00025;
-              } else {
-
               }
               // s(r, c) = (1 + 0.05) * x(r);
               s(r, c) = x(r) + 0.001;
@@ -306,15 +357,34 @@ void run_find (struct argp_state* state) {
 
   // Create a Criteria class to set the solver's stop conditions
   Lens::TCriteria crit = Lens::TCriteria::defaults();
-  crit.iterations = 50;
+  crit.iterations = 5;
   crit.fDelta = 0.05;
 
   solver.x0 = solver.makeInitialSimplex(x);
+  solver.verbose();
   solver.setStopCriteria(crit);
   pbar = progressbar_new("", crit.iterations);
 
-  // and minimize the function
+  // Prepare output
+  if (args.trace) {
+    trace_simplices = args.trace;
+    trace_stream = &(args.trace_file);
+    *trace_stream <<
+      "{\n"
+      "  \"simplex\": [\n";
+  }
+
+  // minimize the function
   solver.minimize(f, x);
+
+  // Close output
+  if (trace_simplices) {
+    *trace_stream <<
+      "\n"
+      "  ]\n"
+      "}\n";
+    trace_stream->close();
+  }
 
   cerr << "argmin " << x.transpose() << std::endl;
   cerr << "f in argmin " << f(x) << std::endl;
