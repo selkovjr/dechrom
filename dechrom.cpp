@@ -7,7 +7,6 @@
 
 const char *argp_program_version = VERSION " " __DATE__;
 
-void run_find (struct argp_state* state) {}
 
 //-------------------------------------------------------------------
 // Command-line option parsing.
@@ -23,6 +22,9 @@ static error_t parse_toplevel (int key, char *arg, struct argp_state *state) {
       assert( arg );
       if(strcmp(arg, "survey") == 0) {
         run_survey(state);
+      }
+      else if(strcmp(arg, "find") == 0) {
+        run_find(state);
       }
       else if(strcmp(arg, "find") == 0) {
         run_find(state);
