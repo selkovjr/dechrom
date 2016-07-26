@@ -16,10 +16,10 @@ using namespace termcolor;
 //
 struct arg_plot {
   int argx, argy;
-  char* device;
-  char* surface_file;
-  char* trace_file;
-  char* plot_file;
+  char const* device;
+  char const* surface_file;
+  char const* trace_file;
+  char const* plot_file;
   bool contour;
 };
 

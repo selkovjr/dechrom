@@ -26,6 +26,7 @@ void run_plot (struct argp_state* state) {
 
       // > ggplot(s.fit, aes(a, b, fill = TCA)) + geom_tile() + ggtitle('TCA surface for the red channel') + scale_fill_gradient(limits = c(min(z), max(z)), low = 'black', high = 'white') + scale_x_continuous(expand = c(0,0)) + scale_y_continuous(expand = c(0,0))
 
+      // Prepare interpolated data
       cout << "library(ggplot2)\n";
       cout << "s.data <- read.table('" << args.surface_file << "', header = TRUE)\n";
       cout << "s.loess <- loess(TCA ~ " << param[args.argx] << " * " << param[args.argy] <<
@@ -43,13 +44,19 @@ void run_plot (struct argp_state* state) {
       cout << "z <- predict(s.loess, newdata=s.fit)\n";
       cout << "s.fit$TCA = as.numeric(z)\n";
 
-      if (args.device.compare("png") == 0) {
+      // Set output device
+      if (string(args.device).compare("png") == 0) {
         cout << "png('" << args.plot_file << ".png', width = 800, height = 800, res=120)\n";
       }
-      cout << "p <- ggplot(s.fit, aes(a, b, fill = TCA)) + geom_tile() +\n"
+
+      // Do the plotting
+      cout << "p <- ggplot(s.fit, aes(x = a, y = b, z = TCA, fill = TCA)) +\n"
+        "  geom_raster() +\n"
+        "  coord_equal() +\n"
+        "  geom_contour(color = 'black', alpha = 0.2, bins = 20) +\n"
         "  xlab('a') + ylab('b') +\n"
         "  ggtitle('TCA metric for the red channel') +\n"
-        "  scale_fill_gradient(limits = c(min(z), max(z)), low = 'black', high = 'white') +\n"
+        "  scale_fill_gradient(limits = c(min(z), max(z)), low = 'white', high = rgb(1.0, 0.5, 0.5)) +\n"
         "  scale_x_continuous(expand = c(0,0)) + scale_y_continuous(expand = c(0,0))\n";
       cout << "print(p)\n";
 
