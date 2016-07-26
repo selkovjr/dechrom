@@ -143,8 +143,7 @@ static double diff (double a, double b, double c, double d, bool exr_mode) {
   if (verbose) {
     end_time = clock();
     elapsed = double(end_time - start_time) / CLOCKS_PER_SEC;
-    cerr << "\r" << flush;
-    cerr << setw(100) << left << 0 << "\r" << flush; // blank line
+    cerr << "\r" << string(100, ' ') << "\r" << flush; // blank line
     cerr << lightgrey << right << setw(5) << run << reset <<
       setw(10) << setprecision(6) << a <<
       setw(10) << setprecision(6) << b <<
@@ -199,12 +198,12 @@ void run_survey (struct argp_state* state) {
   // Load the images
   cerr << lightgrey << "loading reference plane " << reset << args.ref_file << "\r" << flush;
   ref_plane = imread( args.ref_file, CV_LOAD_IMAGE_ANYDEPTH ); // grayscale
-  cerr << setw(100) << left << 0 << "\r" << flush; // blank line
+  cerr << "\r" << string(100, ' ') << "\r" << flush; // blank line
   cerr << lightgrey << "reference plane: " << reset << lightgreen << args.ref_file << reset << endl;
 
   cerr << lightgrey << "loading work plane " << reset << args.work_plane_file << "\r" << flush;
   work_plane = imread( args.work_plane_file, CV_LOAD_IMAGE_ANYDEPTH );
-  cerr << setw(100) << left << 0 << "\r" << flush; // blank line
+  cerr << "\r" << string(100, ' ') << "\r" << flush; // blank line
 
   if (ref_plane.cols != work_plane.cols or ref_plane.rows != work_plane.rows) {
     cerr << on_red << "Input images must have identical geometry. Got "

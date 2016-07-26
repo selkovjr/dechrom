@@ -26,8 +26,8 @@ static error_t parse_toplevel (int key, char *arg, struct argp_state *state) {
       else if(strcmp(arg, "find") == 0) {
         run_find(state);
       }
-      else if(strcmp(arg, "find") == 0) {
-        run_find(state);
+      else if(strcmp(arg, "plot") == 0) {
+        run_plot(state);
       }
       else if(strcmp(arg, "radial") == 0) {
         run_radial(state);

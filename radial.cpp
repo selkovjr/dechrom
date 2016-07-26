@@ -39,7 +39,7 @@ void run_radial (struct argp_state* state) {
       << lightgrey << " with " <<  nthreads << " threads" << reset << endl;
     cerr << lightgrey << "loading input file " << reset << args.input_file << "\r" << flush;
     work_plane = imread( args.input_file, CV_LOAD_IMAGE_ANYDEPTH );
-    cerr << setw(100) << left << 0 << "\r" << flush; // blank line
+    cerr << "\r" << string(100, ' ') << "\r" << flush; // blank line
     width = work_plane.cols;
     height = work_plane.rows;
 

@@ -1,6 +1,6 @@
 GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
 
-OBJ = dechrom.o survey.o util.o cfa_mask.o write_tiff.o progressbar.o
+OBJ = dechrom.o survey.o plot.o util.o cfa_mask.o write_tiff.o progressbar.o
 
 BIN = dechrom
 LIBBIN=.
@@ -21,7 +21,7 @@ LDFLAGS += -g $(CFLAGS) $(LIBDIR) -lncurses -lgomp -lpthread \
   -lMagick++-7.Q16HDRI -lMagickWand-7.Q16HDRI -lMagickCore-7.Q16HDRI
 
 
-LIBMX= survey.o find.o radial.o util.o cfa_mask.o write_tiff.o progressbar.o
+LIBMX= survey.o find.o radial.o plot.o util.o cfa_mask.o write_tiff.o progressbar.o
 
 default: $(OBJ) $(BIN)
 
