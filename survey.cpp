@@ -233,6 +233,8 @@ void run_survey (struct argp_state* state) {
   if (not verbose) {
     color_switch(cerr, work_plane_color);
   }
+
+  printf("%s\t%s\t%s\t%s\t%s\n", "a", "b", "c", "d", "TCA");
   for (unsigned ac = 0; ac < args.nodes; ac++) {
     double a = args.amin + ac * astep;
     for (unsigned bc = 0; bc < args.nodes; bc++) {

@@ -28,10 +28,10 @@ default: $(OBJ) $(BIN)
 $(OBJ) : %.o : %.cpp survey_args.h
 	$(CXX) -c $(CFLAGS)  $< -o $@
 
-$(BIN) : % : %.o  $(LIBMX)
+$(BIN) : % : %.o  $(LIBMX) find_args.h plot_args.h radial_args.h survey_args.h
 	$(CXX) -o $(LIBBIN)/$@  $^ $(LDFLAGS)
 
-radial.o: radial.cpp radial_args.h
+radial.o: radial.cpp
 	g++ -c -std=c++11 -g -O3 \
     -fopenmp -funroll-loops -fomit-frame-pointer -ffast-math \
     -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 \

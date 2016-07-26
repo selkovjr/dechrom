@@ -1,7 +1,6 @@
 #include <argp.h>
 #include <assert.h>
 #include <string.h>
-#include <string>
 #include "termcolor.h"
 #include <iostream>
 #include <iomanip>
@@ -17,8 +16,10 @@ using namespace termcolor;
 //
 struct arg_plot {
   int argx, argy;
+  char* device;
   char* surface_file;
   char* trace_file;
+  char* plot_file;
   bool contour;
 };
 
@@ -47,6 +48,10 @@ static error_t parse_plot_command(int key, char* arg, struct argp_state* state) 
   assert( arguments );
 
   switch(key) {
+    case 'd':
+      arguments->device = arg;
+      break;
+
     case 's':
       if (not file_exists(arg)) {
         cerr << on_red << "TCA surface file does not exist: " << bold << arg << reset << endl;
@@ -61,6 +66,10 @@ static error_t parse_plot_command(int key, char* arg, struct argp_state* state) 
         exit(EXIT_FAILURE);
       }
       arguments->trace_file = arg;
+      break;
+
+    case 'o':
+      arguments->plot_file = arg;
       break;
 
     case 'a':
@@ -94,7 +103,8 @@ static error_t parse_plot_command(int key, char* arg, struct argp_state* state) 
         }
       }
       else {
-        cerr << on_red << "Expecting two lens parameter names 'x,y' where x and y are one of (a, b, c, or d). Got this instead: " << bold << arg << reset << endl;
+        cerr << on_red << "Expecting two lens parameter names 'x,y' where x and y are one of"
+          " (a, b, c, or d). Got this instead: " << bold << arg << reset << endl;
         exit(EXIT_FAILURE);
       }
 
@@ -127,6 +137,8 @@ static error_t parse_plot_command(int key, char* arg, struct argp_state* state) 
 static struct argp_option options_plot[] = {
   {"surface-file", 's', "FILE",           0, "TCA surface data in tabular form <a, b, c, d, f>" },
   {"trace-file",   't', "FILE",           0, "optimization trace in JSON format" },
+  {"output-file",  'o', "FILE",           0, "The plot file to be written by the generated R program (basename)" },
+  {"device",       'd', "DEV",            0, "R graphics device for plotting" },
   {"args",         'a', "X,Y",            0, "specify co-ordinates (a, b), (a, c), etc., for the projection to plot" },
   {"contour",      'c',   0,              0, "do a contour plot instead of a 3d surface plot" },
   {"point",        'p',  "COLOR:COORDS",  0, "plot a point or several" },
@@ -151,7 +163,10 @@ static struct argp argp_plot = {
   sprintf(argv[0], "%s plot", state->name); \
   args.argx = 0; /* lens param a */ \
   args.argy = 1; /* lens param b */ \
+  args.surface_file = NULL; \
   args.contour = false; \
+  args.device = "png"; \
+  args.plot_file = "tca-surface"; \
   argp_parse(&argp_plot, argc, argv, ARGP_IN_ORDER, &argc, &args); \
   free(argv[0]); \
   argv[0] = argv0; \
