@@ -164,6 +164,7 @@ static struct argp argp_plot = {
   args.argx = 0; /* lens param a */ \
   args.argy = 1; /* lens param b */ \
   args.surface_file = NULL; \
+  args.trace_file = NULL; \
   args.contour = false; \
   args.device = "png"; \
   args.plot_file = "tca-surface"; \
