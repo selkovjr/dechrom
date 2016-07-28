@@ -121,11 +121,7 @@ namespace cppoptlib {
           for (int r = 0; r < (int)DIM; ++r) {
             s(r, c) = x(r);
             if (r == c - 1) {
-              if (x(r) == 0) {
-                s(r, c) = 0.00025;
-              }
-              // s(r, c) = (1 + 0.05) * x(r);
-              s(r, c) = x(r) + 0.001;
+              s(r, c) = x(r) + 0.0025;
             }
           }
         }
