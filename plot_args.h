@@ -15,6 +15,7 @@ using namespace termcolor;
 // ## plot command parser
 //
 struct arg_plot {
+  int work_plane_color;
   int argx, argy;
   double z[4], f;
   char const* device;
@@ -63,6 +64,19 @@ static error_t parse_plot_command(int key, char* arg, struct argp_state* state) 
         exit(EXIT_FAILURE);
       }
       arguments->surface_file = arg;
+      arguments->work_plane_color = UNKNOWN;
+      if (strcasestr(arg, "-0.") != NULL) arguments->work_plane_color = RED;
+      if (strcasestr(arg, "-1.") != NULL) arguments->work_plane_color = GREEN;
+      if (strcasestr(arg, "-2.") != NULL) arguments->work_plane_color = BLUE;
+      if (strcasestr(arg, "_0.") != NULL) arguments->work_plane_color = RED;
+      if (strcasestr(arg, "_1.") != NULL) arguments->work_plane_color = GREEN;
+      if (strcasestr(arg, "_2.") != NULL) arguments->work_plane_color = BLUE;
+      if (strcasestr(arg, "-r.") != NULL) arguments->work_plane_color = RED;
+      if (strcasestr(arg, "-g.") != NULL) arguments->work_plane_color = GREEN;
+      if (strcasestr(arg, "-b.") != NULL) arguments->work_plane_color = BLUE;
+      if (strcasestr(arg, "-red") != NULL) arguments->work_plane_color = RED;
+      if (strcasestr(arg, "-green") != NULL) arguments->work_plane_color = GREEN;
+      if (strcasestr(arg, "-blue") != NULL) arguments->work_plane_color = BLUE;
       break;
 
     case 't':

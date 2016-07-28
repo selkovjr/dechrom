@@ -25,6 +25,39 @@ void run_plot (struct argp_state* state) {
     ifstream ifs (args.surface_file);
     string buf;
     string title;
+    string color_name = "[Unknown]";
+    string dark_color = "rgb(0.05, 0.05, 0.05)";
+    string light_color = "rgb(0.95, 0.95, 0.95)";
+    string simplex_color = "rgb(0.4, 0.6, 0.4, 0.3)";
+    string vertex_color = simplex_color;
+    string path_color = "rgb(0.8, 1, 0.8, 0.8)";
+    switch (args.work_plane_color) {
+      case RED:
+        color_name = "Red";
+        dark_color = "rgb(0.2, 0.05, 0.05)";
+        light_color = "rgb(1, 0.5, 0.5)";
+        simplex_color = "rgb(0.8, 0.4, 0.4, 0.2)";
+        vertex_color = "rgb(1, 0.6, 0.6, 0.08)";
+        path_color = "rgb(1, 0.4, 0.4, 0.6)";
+        break;
+      case GREEN:
+        color_name = "Green";
+        dark_color = "rgb(0.05, 0.2, 0.05)";
+        light_color = "rgb(0.5, 1, 0.5)";
+        simplex_color = "rgb(0.4, 0.8, 0.4, 0.2)";
+        vertex_color = "rgb(0.6, 1, 0.6, 0.08)";
+        path_color = "rgb(0.4, 1, 0.4, 0.6)";
+        break;
+      case BLUE:
+        color_name = "Blue";
+        dark_color = "rgb(0.05, 0.05, 0.2)";
+        light_color = "rgb(0.6, 0.6, 1)";
+        simplex_color = "rgb(0.6, 0.6, 0.9, 0.3)";
+        vertex_color = "rgb(0.6, 0.6, 1, 0.1)";
+        path_color = "rgb(0.6, 0.6, 1, 0.6)";
+        break;
+    }
+
 
     while (getline(ifs, buf)) {
       int i = 0;
@@ -38,7 +71,7 @@ void run_plot (struct argp_state* state) {
     }
 
     if (args.contour) {
-      title = "Reg-green TCA survey";
+      title = color_name + "-green TCA survey";
       // Prepare interpolated data
       cout <<
         "# min a = " << surf_min[0] << "\n"
@@ -62,7 +95,7 @@ void run_plot (struct argp_state* state) {
 
       // Prepare simplex trace data
       if (args.trace_file != NULL) {
-        title = "Red-green convergence";
+        title = color_name + "-green convergence";
 
         cout << "t <- fromJSON(paste(readLines('" << args.trace_file << "'), collapse=''))\n"
           "x <- numeric(0)\n"
@@ -104,7 +137,7 @@ void run_plot (struct argp_state* state) {
       // Plot the surface
       cout << "p <- ggplot() +\n"
         "  geom_raster(data = s.data, aes(x = " << param[args.argx] << ", y = " << param[args.argy] << ", fill = TCA)) +\n"
-        "  scale_fill_gradient(limits = c(min(s.data$TCA), max(s.data$TCA)), low = rgb(0.2, 0.05, 0.05), high = rgb(1, 0.5, 0.5)) +\n"
+        "  scale_fill_gradient(limits = c(min(s.data$TCA), max(s.data$TCA)), low = "<< dark_color << ", high = " << light_color << ") +\n"
         "  geom_contour(data = s.fit, aes(x = " << param[args.argx] << ", y = " << param[args.argy] << ", z = TCA), color = 'white', alpha = 0.2, bins = 20) +\n";
 
       // Plot the trace
@@ -112,22 +145,22 @@ void run_plot (struct argp_state* state) {
         if (args.vertices) {
           cout <<
             "  geom_segment(data = simplex, aes(x = sx, y = sy, xend = sxend, yend = syend),\n"
-            "    size = 0.5, color = rgb(0.8, 0.4, 0.4, 0.2)\n"
+            "    size = 0.5, color = " << simplex_color << "\n"
             "  ) +\n"
             "  geom_point(data = simplex, aes(x = sxend, y = syend),\n"
-            "    size = 3, color = rgb(1, 0.6, 0.6, 0.08), shape = 21\n"
+            "    size = 3, color = " << vertex_color << ", shape = 21\n"
             "  ) +\n";
         }
         cout <<
           "  geom_curve(data = path, aes(x = x, y = y, xend = xend, yend = yend),\n"
-          "    size = 0.75, color = rgb(1, 0.4, 0.4, 0.6), arrow = arrow(length = unit(2, 'mm'), angle = 20),\n"
+          "    size = 0.75, color = " << path_color << ", arrow = arrow(length = unit(2, 'mm'), angle = 20),\n"
           "    curvature = 0.3\n"
           "  ) +\n";
       }
 
       // Plot the solution
       if (args.minimizer) {
-        title = "Red channel solution";
+        title = color_name + " channel solution";
         cout << "  geom_vline(xintercept = " << args.z[args.argx] << ", size = 0.5, color = 'white', alpha = 0.5, linetype = 3) +\n";
         cout << "  geom_hline(yintercept = " << args.z[args.argy] << ", size = 0.5, color = 'white', alpha = 0.5, linetype = 3) +\n";
         cout.setf(ios::fixed, ios::floatfield);
