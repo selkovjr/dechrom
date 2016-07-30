@@ -74,7 +74,6 @@ void run_plot (struct argp_state* state) {
       title = color_name + "-green TCA survey";
       // Prepare interpolated data
       cout <<
-        "# min a = " << surf_min[0] << "\n"
         "library(rjson)\n"
         "library(ggplot2)\n"
         "s.data <- read.table('" << args.surface_file << "', header = TRUE)\n"
@@ -117,14 +116,14 @@ void run_plot (struct argp_state* state) {
           "  for (j in 1:5) {\n"
           "    if (j != prev$index + 1) {\n"
           "      ix <- ix + 1\n"
-          "        sx[4 * (i - 1) + ix] = x[i]\n"
-          "        sy[4 * (i - 1) + ix] = y[i]\n"
-          "        sxend[4 * (i - 1) + ix] <- prev$x[[j]][1]\n"
-          "        syend[4 * (i - 1) + ix] <- prev$x[[j]][2]\n"
+          "      sx[4 * (i - 1) + ix] = x[i]\n"
+          "      sy[4 * (i - 1) + ix] = y[i]\n"
+          "      sxend[4 * (i - 1) + ix] <- prev$x[[j]][1]\n"
+          "      syend[4 * (i - 1) + ix] <- prev$x[[j]][2]\n"
           "    }\n"
           "  }\n"
           "}\n"
-          "path <- subset(data.frame(x, y, xend, yend), sqrt((x - xend)^2 + (y - yend)^2) > 0.00025)\n"
+          "path <- subset(data.frame(x, y, xend, yend), sqrt((x - xend)^2 + (y - yend)^2) > 0.00005)\n"
           "simplex <- data.frame(sx, sy, sxend, syend)\n"
           ;
       }
@@ -152,9 +151,12 @@ void run_plot (struct argp_state* state) {
             "  ) +\n";
         }
         cout <<
-          "  geom_curve(data = path, aes(x = x, y = y, xend = xend, yend = yend),\n"
-          "    size = 0.75, color = " << path_color << ", arrow = arrow(length = unit(2, 'mm'), angle = 20),\n"
-          "    curvature = 0.3\n"
+//           "  geom_curve(data = path, aes(x = x, y = y, xend = xend, yend = yend),\n"
+//           "    size = 0.75, color = " << path_color << ", arrow = arrow(length = unit(2, 'mm'), angle = 20),\n"
+//           "    curvature = 0.3\n"
+//           "  ) +\n";
+          "  geom_segment(data = path, aes(x = x, y = y, xend = xend, yend = yend),\n"
+          "    size = 0.75, color = " << path_color << ", arrow = arrow(length = unit(2, 'mm'), angle = 20)\n"
           "  ) +\n";
       }
 
@@ -196,7 +198,7 @@ void run_plot (struct argp_state* state) {
               range << setprecision(6) << surf_min[i] << " .. " << setprecision(6) << surf_max[i];
             }
             cout << "  geom_text(aes(x = Inf, y = Inf, label = '" << param[i] << " = " << range.str() << "'), \n"
-              "size = 3, color = 'white', alpha = 0.8, hjust = 1.1, vjust = " << offset << ") +\n";
+              "    size = 2, color = 'white', alpha = 0.8, hjust = 1.1, vjust = " << offset << ") +\n";
           }
         }
       }
@@ -205,7 +207,17 @@ void run_plot (struct argp_state* state) {
       cout <<
         "  ggtitle('" << title << "') +\n"
         "  xlab('" << param[args.argx] << "') + ylab('" << param[args.argy] << "') +\n"
-        "  scale_x_continuous(expand = c(0,0)) + scale_y_continuous(expand = c(0,0))\n";
+        "  scale_x_continuous(expand = c(0,0)) + scale_y_continuous(expand = c(0,0)) +\n"
+        "  theme(\n"
+        "    panel.grid.minor=element_line(size = 0.25, color = rgb(0.4, 0.4, 0.4, 0.5)),\n"
+        "    panel.grid.major=element_line(size = 0.4, color = rgb(0.5, 0.5, 0.5, 0.4))\n"
+        "  ) +\n"
+        "  theme(\n"
+        "     plot.background=element_rect(fill = 'grey'),\n"
+        "     panel.background=element_rect(fill = rgb(0.3, 0.3, 0.3)), # plot area\n"
+        "     legend.background=element_rect(fill = 'grey', colour=NA), # scale legend\n"
+        "     legend.key = element_rect(colour = NA, col = 'black', size = 0.5, fill = 'black')\n"
+        "  )\n";
 
       // Render
       cout << "print(p)\n";
