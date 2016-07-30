@@ -178,22 +178,24 @@ void run_survey (struct argp_state* state) {
     lightgrey << " samples of " << bold << "TCA" << reset << lightgrey << " for " << reset <<
 
     "a" << lightgrey << (astep ? " in " : " = ") << reset <<
-    args.amin << lightgrey << (astep ? ".." : "") << reset <<
-    (astep ? to_string(args.amax) : "") << reset << lightgrey << ", " << reset <<
+    args.amin << lightgrey << (astep ? ".." : "") << reset;
+    if (astep) cerr << args.amax;
+    cerr << reset << lightgrey << ", " << reset <<
 
     "b" << lightgrey << (bstep ? " in " : " = ") << reset <<
-    args.bmin << lightgrey << (bstep ? ".." : "") << reset <<
-    (bstep ? to_string(args.bmax) : "") << reset << lightgrey << ", " << reset <<
+    args.bmin << lightgrey << (bstep ? ".." : "") << reset;
+    if (bstep) cerr << args.bmax;
+    cerr << reset << lightgrey << ", " << reset <<
 
     "c" << lightgrey << (cstep ? " in " : " = ") << reset <<
-    args.cmin << lightgrey << (cstep ? ".." : "") << reset <<
-    (cstep ? to_string(args.cmax) : "") << reset << lightgrey << ", " << reset <<
+    args.cmin << lightgrey << (cstep ? ".." : "") << reset;
+    if (cstep) cerr << args.cmax;
+    cerr << reset << lightgrey << ", " << reset <<
 
     "d" << lightgrey << (dstep ? " in " : " = ") << reset <<
-    args.dmin << lightgrey << (dstep ? ".." : "") << reset <<
-    (dstep ? to_string(args.dmax) : "") << reset << lightgrey << reset <<
-
-    endl;
+    args.dmin << lightgrey << (dstep ? ".." : "") << reset;
+    if (dstep) cerr << args.dmax;
+    cerr << reset << lightgrey << ", " << reset << endl;
 
   // Load the images
   cerr << lightgrey << "loading reference plane " << reset << args.ref_file << "\r" << flush;
