@@ -64,8 +64,8 @@ void run_radial (struct argp_state* state) {
             x = (double)(2 * (i + 0.5) - width) / height;
             r = sqrt(x * x + y * y);
             rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
-            map_x.at<float>(j, i) = (height * x * rd / r + width) / 2;
-            map_y.at<float>(j, i) = (height * y * rd / r + height) / 2;
+            map_x.at<float>(j, i) = (height * x * rd / r + width) / 2 - args.shift_x;
+            map_y.at<float>(j, i) = (height * y * rd / r + height) / 2 - args.shift_y;
           }
         }
       } /* end of parallel section */
@@ -83,8 +83,8 @@ void run_radial (struct argp_state* state) {
             x = (double)(2 * (i + 0.5) - width) / width;
             r = sqrt(x * x + y * y);
             rd = a * r + b * pow(r, 2) + c * pow(r, 3) + d * pow(r, 4);
-            map_x.at<float>(j, i) = (width * x * rd / r + width) / 2;
-            map_y.at<float>(j, i) = (width * y * rd / r + height) / 2;
+            map_x.at<float>(j, i) = (width * x * rd / r + width) / 2 - args.shift_x;
+            map_y.at<float>(j, i) = (width * y * rd / r + height) / 2 - args.shift_y;
           }
         }
       } /* end of parallel section */
@@ -99,7 +99,7 @@ void run_radial (struct argp_state* state) {
   }
 
   else {
-    // Slow, high quality
+    // Slower, high quality
     cerr << lightgrey << "Running " << reset << "Magick::BarrelDistortion"
       << lightgrey << " with " <<  nthreads << " threads" << reset << endl;
     Magick::ResourceLimits::thread(nthreads);

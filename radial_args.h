@@ -14,6 +14,7 @@ using namespace termcolor;
 //
 struct arg_radial {
   double a, b, c, d;
+  double shift_x, shift_y;
   char* input_file;
   char* output_file;
   bool fast;
@@ -48,6 +49,22 @@ static error_t parse_radial_command(int key, char* arg, struct argp_state* state
   switch(key) {
     case 'f':
       arguments->fast = true;
+      break;
+
+    case 'x':
+      if (sscanf(arg, "%lf", &(arguments->shift_x)) != 1) {
+        cerr << on_red << "Expecting horizontal shift amount in pixels. Got this: "
+          << bold << arg << reset << endl;
+        exit(EXIT_FAILURE);
+      }
+      break;
+
+    case 'y':
+      if (sscanf(arg, "%lf", &(arguments->shift_y)) != 1) {
+        cerr << on_red << "Expecting horizontal shift amount in pixels. Got this: "
+          << bold << arg << reset << endl;
+        exit(EXIT_FAILURE);
+      }
       break;
 
     case ARGP_KEY_NO_ARGS:
@@ -103,7 +120,9 @@ static error_t parse_radial_command(int key, char* arg, struct argp_state* state
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 static struct argp_option options_radial[] = {
-  {"fast",      'f',    0,      0, "Trade quality for speed by using OpenCV remap()" },
+  {"fast",      'f',    0,     0, "trade some quality for speed by using OpenCV remap()" },
+  {"shift-x",   'x', "PIXELS", 0, "shift the final distorted image horizontally" },
+  {"shift-y",   'y', "PIXELS", 0, "shift the final distorted image vertically" },
   { 0 }
 };
 
@@ -124,6 +143,8 @@ static struct argp argp_radial = {
   if (!argv[0]) argp_failure(state, 1, ENOMEM, 0); \
   sprintf(argv[0], "%s radial", state->name); \
   args.fast = false; \
+  args.shift_x = 0.0; \
+  args.shift_y = 0.0; \
   argp_parse(&argp_radial, argc, argv, ARGP_IN_ORDER, &argc, &args); \
   free(argv[0]); \
   argv[0] = argv0; \
