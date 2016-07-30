@@ -45,6 +45,7 @@ static ofstream *trace_stream;
 static double diff (double a, double b, double c, double d);
 
 
+
 namespace cppoptlib {
 
   // Define the target function (Lens::value())
@@ -113,15 +114,16 @@ namespace cppoptlib {
       using MatrixType = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
 
       MatrixType makeInitialSimplex (TVector &x) {
-        size_t DIM = x.rows();
+        size_t dim = x.rows();
 
         // create initial simplex
-        MatrixType s = MatrixType::Zero(DIM, DIM + 1);
-        for (int c = 0; c < (int)DIM + 1; ++c) {
-          for (int r = 0; r < (int)DIM; ++r) {
+        MatrixType s = MatrixType::Zero(dim, dim + 1);
+        for (int c = 0; c < (int)dim + 1; ++c) {
+          for (int r = 0; r < (int)dim; ++r) {
             s(r, c) = x(r);
             if (r == c - 1) {
-              s(r, c) = x(r) + 0.0025;
+              s(r, c) = x(r) + 0.005;
+
             }
           }
         }
@@ -336,7 +338,7 @@ void run_find (struct argp_state* state) {
   // Create a Criteria class to set the solver's stop conditions
   Lens::TCriteria crit = Lens::TCriteria::defaults();
   crit.iterations = 100;
-  crit.fDelta = 0.5;
+  crit.fDelta = 0.05;
 
   solver.x0 = solver.makeInitialSimplex(x);
   solver.setStopCriteria(crit);
