@@ -32,6 +32,9 @@ static error_t parse_toplevel (int key, char *arg, struct argp_state *state) {
       else if(strcmp(arg, "radial") == 0) {
         run_radial(state);
       }
+      else if(strcmp(arg, "view") == 0) {
+        run_view(state);
+      }
       else {
         argp_error(state, "%s is not a valid command", arg);
       }
@@ -67,8 +70,10 @@ int main(int argc, char **argv) {
     "Version: %s\n"
     "\n"
     "Command: survey  sample TCA in a volume of parameter space\n"
+    "         plot    generate an R program to display survey data\n"
     "         find    find optimal distortion parameters\n"
     "         radial  apply a radial distortion to an image\n"
+    "         view    examine channel convergence\n"
     "\n",
     argp_program_version
   );
