@@ -86,7 +86,7 @@ Because the radial distortion model does not perfectly fit all real-world cases 
 
 I use a printed calibration target mounted on a tripod like so:
 
-![printed target](doc/images/target.jpeg)
+<img src="doc/images/target.jpeg" width="220">
 
 ### 1. Toss a coin
 
