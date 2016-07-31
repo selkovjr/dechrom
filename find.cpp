@@ -302,6 +302,9 @@ void run_find (struct argp_state* state) {
   if (work_plane.find("-0.") != string::npos) work_plane_color = RED;
   if (work_plane.find("-1.") != string::npos) work_plane_color = GREEN;
   if (work_plane.find("-2.") != string::npos) work_plane_color = BLUE;
+  if (work_plane.find("red.") != string::npos) work_plane_color = RED;
+  if (work_plane.find("green.") != string::npos) work_plane_color = GREEN;
+  if (work_plane.find("blue.") != string::npos) work_plane_color = BLUE;
   cerr << lightgrey << "work plane: " << reset;
   color_switch(cerr, work_plane_color);
   cerr << work_plane << reset;
