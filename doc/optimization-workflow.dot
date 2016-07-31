@@ -1,241 +1,136 @@
 digraph G {
   {rank="same" exr_raw bayer}
+  {rank="same" abcdxy_red abcd_red abcd_blue abcdxy_blue}
+  {rank="same" tweak view}
 
-  bayer [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td>Common Bayer Array</td></tr>
-      </table>>
+  //------------------------------- data nodes ---------------------------------
+  bayer [ shape="box", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td>Common Bayer Array</td></tr>
+    </table>>
   ];
 
-  exr_raw [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td>Fuji EXR</td></tr>
-      </table>>
+  exr_raw [ shape="box", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td>Fuji high-resolution EXR</td></tr>
+    </table>>
   ];
 
-  frame_0 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/exr-frame-0-thumb.png"/></td></tr>
-      <tr><td>frame_0.tiff</td></tr>
-      </table>>
+  frame_0 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/exr-frame-0-thumb.png"/></td></tr>
+    <tr><td>bayer_0.tiff</td></tr>
+    </table>>
   ];
 
-  frame_1 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/exr-frame-1-thumb.png"/></td></tr>
-      <tr><td>frame_1.tiff</td></tr>
-      </table>>
+  frame_1 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/exr-frame-1-thumb.png"/></td></tr>
+    <tr><td>bayer_1.tiff</td></tr>
+    </table>>
   ];
 
-  interpolated [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/interpolated-thumb.png"/></td></tr>
-      <tr><td>interpolated.tiff</td></tr>
-      </table>>
+  interpolated [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/interpolated-thumb.png"/></td></tr>
+    <tr><td>interpolated.tiff</td></tr>
+    </table>>
   ];
 
-  interpolated_common [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/interpolated-common-thumb.png"/></td></tr>
-      <tr><td>interpolated.tiff</td></tr>
-      </table>>
+  interpolated_common [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/interpolated-common-thumb.png"/></td></tr>
+    <tr><td>interpolated.tiff</td></tr>
+    </table>>
   ];
 
-  interpolated_0 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/interpolated-0-thumb.png"/></td></tr>
-      <tr><td><font color="red">interpolated-0.tiff</font></td></tr>
-      </table>>
+  interpolated_0 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/interpolated-0-thumb.png"/></td></tr>
+    <tr><td><font color="red">interpolated-0.tiff</font></td></tr>
+    </table>>
   ];
 
-  interpolated_1 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/interpolated-1-thumb.png"/></td></tr>
-      <tr><td><font color="green">interpolated-1.tiff</font></td></tr>
-      </table>>
+  interpolated_1 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/interpolated-1-thumb.png"/></td></tr>
+    <tr><td><font color="green">interpolated-1.tiff</font></td></tr>
+    </table>>
   ];
 
-  interpolated_2 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/interpolated-2-thumb.png"/></td></tr>
-      <tr><td><font color="blue">interpolated-2.tiff</font></td></tr>
-      </table>>
+  interpolated_2 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/interpolated-2-thumb.png"/></td></tr>
+    <tr><td><font color="blue">interpolated-2.tiff</font></td></tr>
+    </table>>
   ];
 
-  edge_0 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/edge-thumb.png"/></td></tr>
-      <tr><td><font color="red">edge-0.tiff</font></td></tr>
-      </table>>
+  edge_0 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/edge-thumb.png"/></td></tr>
+    <tr><td><font color="red">edge-0.tiff</font></td></tr>
+    </table>>
   ];
 
-  edge_0_dist [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/edge-thumb.png"/></td></tr>
-      <tr><td><font color="red">edge-0-dist.tiff</font></td></tr>
-      </table>>
+  edge_0_dist [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/edge-thumb.png"/></td></tr>
+    <tr><td><font color="red">edge-0-dist.tiff</font></td></tr>
+    </table>>
   ];
 
-  edge_1 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/edge-thumb.png"/></td></tr>
-      <tr><td><font color="green">edge-1.tiff</font></td></tr>
-      </table>>
+  edge_1 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/edge-thumb.png"/></td></tr>
+    <tr><td><font color="green">edge-1.tiff</font></td></tr>
+    </table>>
   ];
 
-  edge_2 [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/edge-thumb.png"/></td></tr>
-      <tr><td><font color="blue">edge-2.tiff</font></td></tr>
-      </table>>
+  edge_2 [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/edge-thumb.png"/></td></tr>
+    <tr><td><font color="blue">edge-2.tiff</font></td></tr>
+    </table>>
   ];
 
-  edge_2_dist [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/edge-thumb.png"/></td></tr>
-      <tr><td><font color="blue">edge-2-dist.tiff</font></td></tr>
-      </table>>
+  edge_2_dist [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/edge-thumb.png"/></td></tr>
+    <tr><td><font color="blue">edge-2-dist.tiff</font></td></tr>
+    </table>>
   ];
 
-  abcd_red [
-    shape="box",
-    style = "filled",
-    margin="0.1",
-    color="#ffc8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  abcd_red [ shape="none", style = "filled", margin="0.1", color="#ffc8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>a, b, c, d</td></tr>
       </table>>
   ];
 
-  abcd_blue [
-    shape="box",
-    style = "filled",
-    margin="0.1",
-    color="#c8c8ff",
-    fontsize=12,
-    fontname="Helvetica",
+  abcdxy_red [ shape="none", style = "filled", margin="0.1", color="#ffc8c8", fontsize=12, fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>a, b, c, <b>d</b>, <b>x</b>, <b>y</b></td></tr>
+      </table>>
+  ];
+
+  abcd_blue [ shape="none", style = "filled", margin="0.1", color="#c8c8ff", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>a, b, c, d</td></tr>
       </table>>
   ];
 
-  proof [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  abcdxy_blue [ shape="none", style = "filled", margin="0.1", color="#c8c8ff", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/proof-thumb.png"/></td></tr>
-      <tr><td>proof.tiff</td></tr>
+      <tr><td>a, b, c, <b>d</b>, <b>x</b>, <b>y</b></td></tr>
       </table>>
   ];
 
-  qc_panel [
-    shape="box",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
-    label=<<table border="0" cellborder="0">
-      <tr><td><img src="images/qc-panel-thumb.png"/></td></tr>
-      <tr><td>qc-panel.tiff</td></tr>
-      </table>>
+  proof [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/proof-thumb.png"/></td></tr>
+    <tr><td>proof.tiff</td></tr>
+    </table>>
+  ];
+
+  qc_panel [ shape="none", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica", label=<<table border="0" cellborder="0">
+    <tr><td><img src="images/qc-panel-thumb.png"/></td></tr>
+    <tr><td>qc-panel.tiff</td></tr>
+    </table>>
   ];
 
 
-
-  dcraw [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  //------------------------------- process nodes ---------------------------------
+  dcraw [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dcraw -d -s all</td></tr>
       </table>>
   ];
 
-  raw_developer [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  raw_developer [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>Conventional Development Process</td></tr>
       <tr><td>(without TCA correction)</td></tr>
@@ -243,135 +138,75 @@ digraph G {
       </table>>
   ];
 
-  fuji_exr [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  fuji_exr [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>fuji-exr linear</td></tr>
       </table>>
   ];
 
-  separate [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  separate [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>convert -separate</td></tr>
       </table>>
   ];
 
-  combine [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  combine [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>convert -combine</td></tr>
       </table>>
   ];
 
-  canny_0 [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  canny_0 [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>convert -canny</td></tr>
       </table>>
   ];
 
-  canny_1 [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  canny_1 [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>convert -canny</td></tr>
       </table>>
   ];
 
-  canny_2 [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  canny_2 [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>convert -canny</td></tr>
       </table>>
   ];
 
-  find_red [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  find_red [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dechrom find</td></tr>
       </table>>
   ];
 
-  find_blue [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  find_blue [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dechrom find</td></tr>
       </table>>
   ];
 
-  radial_red [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  radial_red [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dechrom radial</td></tr>
       </table>>
   ];
 
-  radial_blue [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  radial_blue [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dechrom radial</td></tr>
       </table>>
   ];
 
-  view [
-    shape="box",
-    style="rounded, filled",
-    margin="0.1",
-    color="#c8c8c8",
-    fontsize=12,
-    fontname="Helvetica",
+  view [ shape="none", style="rounded, filled", margin="0.1", color="#c8c8c8", fontsize=12, fontname="Helvetica",
     label=<<table border="0" cellborder="0">
       <tr><td>dechrom view</td></tr>
+      </table>>
+  ];
+
+  tweak [ shape="none",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/tweak.png"/></td></tr>
       </table>>
   ];
 
@@ -412,6 +247,11 @@ digraph G {
   combine -> proof;
   proof -> view;
   view -> qc_panel;
+  qc_panel -> tweak;
+  tweak -> abcdxy_red;
+  tweak -> abcdxy_blue;
+  abcdxy_red -> radial_red;
+  abcdxy_blue -> radial_blue;
 }
 
 

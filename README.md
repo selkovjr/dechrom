@@ -84,8 +84,12 @@ Because the radial distortion model does not perfectly fit all real-world cases 
 
 ### 0. Shoot a suitable target
 
+I use a printed calibration target mounted on a tripod like so:
+
+![printed target](doc/images/target.jpeg)
+
 ### 1. Toss a coin
 
-This workflow will take you from a raw image to a first guesstimate of distortion coefficients.
+This workflow will take you from a raw image to a first guesstimate of distortion coefficients. It is essentially the same workflow Daniel Blueman describes in his thesis, except it uses edge-detected derivatives of the calibration image instead of histogram-equalized ones, and, against Daniel's recommendation, the Nelder-Mead solver is used instead of L-BFGS-B for the simple technical reason that I was unable to get BFGS started on this problem.
 
 ![optimization workflow](doc/images/optimization-workflow.png)
