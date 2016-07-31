@@ -60,7 +60,7 @@ corresponding point in the source image:
 
 &nbsp;&nbsp;  *dst*(*x*, *y*) = *src*(*map<sub>x</sub>*(*x*, *y*), *map<sub>y</sub>*(*x*, *y*))
 
-![remapping diagram](doc/images/remapping.svg)
+![remapping diagram](doc/images/remapping.png)
 
 Points in the destination image that map outside the source image (_virtual
 pixels_) are set to black. The digital version of this map is computed as
@@ -75,7 +75,7 @@ follows:
 
 where *i* and *j* are the *x*- and *y*-indices of the destination image, *w* and *h* are the width and height of both images, and (***a***, ***b***, ***c***, ***d***) are the radial distortion coefficients we seek to recover. Co-ordinates *x* and *y* are centered and normalized to the shorter dimension (*h* in landscape orientation):
 
-![coordinate mapping](doc/images/radius-mapping.svg)
+![coordinate mapping](doc/images/radius-mapping.png)
 
 Because the radial distortion model does not perfectly fit all real-world cases of chromatic aberration, parameters *shift<sub>x</sub>* and *shift<sub>y</sub>* can be used as additional tweaks, but they are not optimized automatically.
 
