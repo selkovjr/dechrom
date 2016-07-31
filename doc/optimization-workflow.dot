@@ -1,0 +1,417 @@
+digraph G {
+  {rank="same" exr_raw bayer}
+
+  bayer [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>Common Bayer Array</td></tr>
+      </table>>
+  ];
+
+  exr_raw [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>Fuji EXR</td></tr>
+      </table>>
+  ];
+
+  frame_0 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/exr-frame-0-thumb.png"/></td></tr>
+      <tr><td>frame_0.tiff</td></tr>
+      </table>>
+  ];
+
+  frame_1 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/exr-frame-1-thumb.png"/></td></tr>
+      <tr><td>frame_1.tiff</td></tr>
+      </table>>
+  ];
+
+  interpolated [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/interpolated-thumb.png"/></td></tr>
+      <tr><td>interpolated.tiff</td></tr>
+      </table>>
+  ];
+
+  interpolated_common [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/interpolated-common-thumb.png"/></td></tr>
+      <tr><td>interpolated.tiff</td></tr>
+      </table>>
+  ];
+
+  interpolated_0 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/interpolated-0-thumb.png"/></td></tr>
+      <tr><td><font color="red">interpolated-0.tiff</font></td></tr>
+      </table>>
+  ];
+
+  interpolated_1 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/interpolated-1-thumb.png"/></td></tr>
+      <tr><td><font color="green">interpolated-1.tiff</font></td></tr>
+      </table>>
+  ];
+
+  interpolated_2 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/interpolated-2-thumb.png"/></td></tr>
+      <tr><td><font color="blue">interpolated-2.tiff</font></td></tr>
+      </table>>
+  ];
+
+  edge_0 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/edge-thumb.png"/></td></tr>
+      <tr><td><font color="red">edge-0.tiff</font></td></tr>
+      </table>>
+  ];
+
+  edge_0_dist [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/edge-thumb.png"/></td></tr>
+      <tr><td><font color="red">edge-0-dist.tiff</font></td></tr>
+      </table>>
+  ];
+
+  edge_1 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/edge-thumb.png"/></td></tr>
+      <tr><td><font color="green">edge-1.tiff</font></td></tr>
+      </table>>
+  ];
+
+  edge_2 [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/edge-thumb.png"/></td></tr>
+      <tr><td><font color="blue">edge-2.tiff</font></td></tr>
+      </table>>
+  ];
+
+  edge_2_dist [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/edge-thumb.png"/></td></tr>
+      <tr><td><font color="blue">edge-2-dist.tiff</font></td></tr>
+      </table>>
+  ];
+
+  abcd_red [
+    shape="box",
+    style = "filled",
+    margin="0.1",
+    color="#ffc8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>a, b, c, d</td></tr>
+      </table>>
+  ];
+
+  abcd_blue [
+    shape="box",
+    style = "filled",
+    margin="0.1",
+    color="#c8c8ff",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>a, b, c, d</td></tr>
+      </table>>
+  ];
+
+  proof [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/proof-thumb.png"/></td></tr>
+      <tr><td>proof.tiff</td></tr>
+      </table>>
+  ];
+
+  qc_panel [
+    shape="box",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td><img src="images/qc-panel-thumb.png"/></td></tr>
+      <tr><td>qc-panel.tiff</td></tr>
+      </table>>
+  ];
+
+
+
+  dcraw [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dcraw -d -s all</td></tr>
+      </table>>
+  ];
+
+  raw_developer [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>Conventional Development Process</td></tr>
+      <tr><td>(without TCA correction)</td></tr>
+      <tr><td><i>interpolation must be unbiased</i></td></tr>
+      </table>>
+  ];
+
+  fuji_exr [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>fuji-exr linear</td></tr>
+      </table>>
+  ];
+
+  separate [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>convert -separate</td></tr>
+      </table>>
+  ];
+
+  combine [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>convert -combine</td></tr>
+      </table>>
+  ];
+
+  canny_0 [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>convert -canny</td></tr>
+      </table>>
+  ];
+
+  canny_1 [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>convert -canny</td></tr>
+      </table>>
+  ];
+
+  canny_2 [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>convert -canny</td></tr>
+      </table>>
+  ];
+
+  find_red [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dechrom find</td></tr>
+      </table>>
+  ];
+
+  find_blue [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dechrom find</td></tr>
+      </table>>
+  ];
+
+  radial_red [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dechrom radial</td></tr>
+      </table>>
+  ];
+
+  radial_blue [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dechrom radial</td></tr>
+      </table>>
+  ];
+
+  view [
+    shape="box",
+    style="rounded, filled",
+    margin="0.1",
+    color="#c8c8c8",
+    fontsize=12,
+    fontname="Helvetica",
+    label=<<table border="0" cellborder="0">
+      <tr><td>dechrom view</td></tr>
+      </table>>
+  ];
+
+  bayer -> raw_developer;
+  exr_raw -> dcraw;
+  dcraw -> frame_0;
+  dcraw -> frame_1;
+  frame_0 -> fuji_exr;
+  frame_1 -> fuji_exr;
+  fuji_exr -> interpolated;
+  raw_developer -> interpolated_common;
+  interpolated -> separate;
+  interpolated_common -> separate;
+  separate -> interpolated_0;
+  separate -> interpolated_1;
+  separate -> interpolated_2;
+  interpolated_0 -> canny_0;
+  interpolated_1 -> canny_1;
+  interpolated_2 -> canny_2;
+  canny_0 -> edge_0;
+  canny_1 -> edge_1;
+  canny_2 -> edge_2;
+  edge_0 -> find_red;
+  edge_1 -> find_red;
+  edge_2 -> find_blue;
+  edge_1 -> find_blue;
+  find_red -> abcd_red;
+  find_blue -> abcd_blue;
+  abcd_red -> radial_red;
+  abcd_blue -> radial_blue;
+  edge_0 -> radial_red;
+  edge_2 -> radial_blue;
+  radial_red -> edge_0_dist;
+  radial_blue -> edge_2_dist;
+  edge_0_dist -> combine;
+  edge_1 -> combine;
+  edge_2_dist -> combine;
+  combine -> proof;
+  proof -> view;
+  view -> qc_panel;
+}
+
+
