@@ -21,7 +21,7 @@ It is packaged in a single binary with the following subcommands:
 ## Pixel-level result sample
 ![sample](doc/images/sample.png)
 
-The image on the left is produced by detecting edges in a crude linear interpolation of the raw EXR photograph. On the right, the corrected version of the same image. Distortion coefficients were obtained from the raw image by optimization.
+The image on the left is produced by detecting edges in a crude linear interpolation of the raw EXR photograph. On the right, the corrected version of the same image. Distortion coefficients were obtained from the raw image by minimizing inter-channel differences.
 
 
 ## Motivation
@@ -97,21 +97,22 @@ I use a printed calibration target mounted on a tripod like so:
 
 <img src="doc/images/target.jpeg" width="220">
 
-The small size of a target like this is said to present problems at wide angles
-due to the proximity of the lens and the associated parallax. At my camera's
-widest setting, I had to shoot this 1m-wide target from about 70 centimeters in
-order to fill the frame. Lens calibration experts recommend the minimal object
-distance on the order of 10 meters. I interpret this recommendation as
-applicable to full-size sensors and lenses used by the experts, and I have
-found no indications of parallax shooting this target with Fuji HS50EXR, whose
-sensor (6.4 × 4.8 mm) must be one of the smallest you'll find in any camera. If
-the problem exists, it is likely of smaller magnitude than the chromatic
-aberration problem we're solving.
+The small size of a target like this is believed to present problems at wide
+angles due to the proximity of the lens and the associated parallax. At my
+camera's widest setting, I had to shoot this 1m-wide target from about 70
+centimeters in order to fill the frame. Lens calibration experts recommend the
+minimal object distance on the order of 10 meters. I interpret this
+recommendation as applicable to full-size sensors and lenses used by the
+experts, and I have found no indications of parallax in the images of this
+target made with Fuji HS50EXR, whose sensor (6.4 × 4.8 mm) must be one of the
+smallest to be found in any camera. If the problem exists, it is likely of
+smaller magnitude than the chromatic aberration problem we're solving.
 
-At any rate, what really matters is that the scene you use for calibration is
-filled with prominent high-contrast features that will not be easily overcome
-with noise. The target I chose satisfies this requirement, but many other
-types, such as buildings, will also work.
+At any rate, what really matters is that the scene used for calibration is
+populated by prominent high-contrast features that cannot be easily overcome
+with noise. The target I use satisfies this requirement, but many other
+types, such as building façades, will also work.
+
 
 ### 1. Toss a coin
 
@@ -126,7 +127,7 @@ going.
 The following diagram shows two entry points: one for the EXR data, and another
 one for conventional Bayer. The EXR array is composed of two interlaced Bayer
 arrays. They are interlaced in such a way that their combination can only be
-mapped to a rectangular grid if it is tilted 45°. The `dechrom` tool suite
+mapped to a rectangular grid if they are tilted 45°. The `dechrom` tool suite
 works equally well with both kinds of images; the only difference is the
 EXR-specific optimization whereby the black mask surrounding the tilted array
 is excluded from processing. Also, a Fuji-specific tool from another tool suite
@@ -137,5 +138,25 @@ In either case, use a simple linear interpolation. Avoid AHD, bicubic, or any
 sophisticated interpolation method. They are all based on the assumption that
 color planes are aligned.
 
-
 ![optimization workflow](doc/images/optimization-workflow.png)
+
+At the end of this workflow, a lattice of central and peripheral patches from
+the proof image is composed as a quality control aid. The goal is to make the
+edges appear as white as possible at the pixel level, and to make sure that any
+remaining color fringing does not show consistent directional bias across the
+image. Interpolation artifacts and aliasing in edge detection will always
+result in scattered colored spots and line segments, but such defects must not
+be continuous and they must not occur on the same side everywhere. The
+following two samples illustrate the unbiased and biased patterns:
+
+![unbiased](doc/images/unbiased.png) ![biased](doc/images/biased.png)
+
+Small biases can be compensated by tweaking distortion coefficients (starting
+with the ***d***, as it has the highest power) or by shifting the entire color
+plane (parameters ***x*** and ***y*** in `radial`). If, for example, one color
+plane is in a perfect match in one corner but appears to be too large in the
+opposite corner, with the defect varying proportionally in between, such
+result may indicate an axial tilt and can be corrected by reducing the amount
+of distortion for this plane and shifting it at the same time.
+
+## 2. If you are lucky
