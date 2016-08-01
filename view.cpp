@@ -16,6 +16,23 @@ using namespace std;
 using namespace cv;
 
 
+void setChannel(Mat &mat, int channel, ushort value) {
+  // make sure the image has enough channels
+  if (mat.channels() < channel + 1)
+    return;
+
+  // check whether the image is continuous or not
+  if (mat.isContinuous()) {
+    mat.reshape(1, mat.rows * mat.cols).col(channel).setTo(Scalar(value));
+  }
+  else{
+    for (int i = 0; i < mat.rows; i++) {
+      mat.row(i).reshape(1, mat.cols).col(channel).setTo(Scalar(value));
+    }
+  }
+}
+
+
 // --------------------------------------------------------------------
 void run_view (struct argp_state* state) {
   PARSE_ARGS_VIEW;
@@ -59,6 +76,28 @@ void run_view (struct argp_state* state) {
 
     Mat out(3 * size + 4 * padding, 3 * size + 4 * padding, input.type());
     out.setTo(Scalar(20000, 20000, 20000));
+
+    if (    args.r and     args.g and not args.b) {
+      setChannel(input, 0, 0); // b -- OpenCV channel order is B, G, R
+    }
+    if (    args.r and not args.g and     args.b) {
+      setChannel(input, 1, 0); // g
+    }
+    if (    args.r and not args.g and not args.b) {
+      setChannel(input, 1, 0); // g
+      setChannel(input, 0, 0); // b
+    }
+    if (not args.r and     args.g and     args.b) {
+      setChannel(input, 2, 0); // r
+    }
+    if (not args.r and     args.g and not args.b) {
+      setChannel(input, 2, 0); // r
+      setChannel(input, 0, 0); // b
+    }
+    if (not args.r and not args.g and     args.b) {
+      setChannel(input, 2, 0); // r
+      setChannel(input, 1, 0); // g
+    }
 
     // Center (0)
     Mat(input, Rect(width / 2 - size / 2 + args.center_x, height / 2 - size / 2 + args.center_y, size, size))
