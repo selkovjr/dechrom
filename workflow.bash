@@ -7,9 +7,14 @@ fuji-exr linear -h 150912_160716_* interpolated.tiff # EXR
 fuji-exr linear 151018_180303_0.tiff interpolated.tiff # subframe
 
 convert interpolated.tiff -separate interpolated-%d.tiff
+
 convert interpolated-0.tiff -equalize equalized-0.tiff
 convert interpolated-1.tiff -equalize equalized-1.tiff
 convert interpolated-2.tiff -equalize equalized-2.tiff
+
+convert interpolated-0.tiff -canny 0x1+10%+20% edge-0.tiff
+convert interpolated-1.tiff -canny 0x1+10%+20% edge-1.tiff
+convert interpolated-2.tiff -canny 0x1+10%+20% edge-2.tiff
 
 ./radial-distort-grid 0 0 0 0 equalized-1.tiff equalized-0.tiff dummy > surface.tab
 ./radial-distort-optimize 0.9996 0 0 0 equalized-1.tiff equalized-0.tiff > solution.tab
